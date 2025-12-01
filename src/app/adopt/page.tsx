@@ -1,7 +1,6 @@
 'use client';
 
 import PetCard from '@/components/pet-card';
-import { mockPets } from '@/lib/data';
 import {
   Select,
   SelectContent,
@@ -15,16 +14,21 @@ import { Search } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
 import type { Pet } from '@/types';
+import { db } from '@/lib/firebase'; // Import the db instance
+import { collection, getDocs } from 'firebase/firestore'; // Import firestore functions
 
 export default function AdoptPage() {
   const [allPets, setAllPets] = useState<Pet[]>([]);
 
   useEffect(() => {
-    // In a real app, you'd fetch this. For now, we'll use localStorage
-    // to get a combined list of mock pets and newly created pets.
-    const storedPetsRaw = localStorage.getItem('userPets');
-    const allRegisteredPets = storedPetsRaw ? JSON.parse(storedPetsRaw) : mockPets;
-    setAllPets(allRegisteredPets);
+    const fetchPets = async () => {
+      const petsCollection = collection(db, 'pets');
+      const petsSnapshot = await getDocs(petsCollection);
+      const petsList = petsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Pet[];
+      setAllPets(petsList);
+    };
+
+    fetchPets();
   }, []);
 
   const adoptionPets = allPets.filter((pet) => pet.status === 'Adoption');
@@ -73,7 +77,7 @@ export default function AdoptPage() {
               No hay mascotas para adoptar
             </h3>
             <p className="mt-2 text-muted-foreground">
-              Vuelve a consultar pronto o visita los refugios locales.
+              Aún no hay datos en Firestore. ¡Agrega algunos para empezar!
             </p>
           </div>
         )}
