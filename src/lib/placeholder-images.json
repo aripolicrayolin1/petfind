@@ -1,0 +1,106 @@
+{
+  "placeholderImages": [
+    {
+      "id": "pet-1",
+      "description": "Un cachorro de golden retriever feliz sentado sobre la hierba.",
+      "imageUrl": "https://images.unsplash.com/photo-1593134257782-e895c7c79618?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxnb2xkZW4lMjByZXRyaWV2ZXIlMjBwdXBweXxlbnwwfHx8fDE3NjMyMDc1NTV8MA&ixlib=rb-4.0.3&q=80&w=800",
+      "imageHint": "golden retriever puppy"
+    },
+    {
+      "id": "pet-2",
+      "description": "Un curioso gato Siamés mirando a la cámara.",
+      "imageUrl": "https://plus.unsplash.com/premium_photo-1677101221533-54b9f1d42a94?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3",
+      "imageHint": "siamese cat"
+    },
+    {
+      "id": "pet-3",
+      "description": "Un esponjoso perro Samoyedo con una gran sonrisa.",
+      "imageUrl": "https://images.unsplash.com/photo-1548625363-8f6a03742461?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzYW1veWVkJTIwZG9nfGVufDB8fHx8MTc1OTc1ODMzNnww&ixlib=rb-4.0.3&q=80&w=800",
+      "imageHint": "samoyed dog"
+    },
+    {
+      "id": "pet-4",
+      "description": "Un elegante gato negro con penetrantes ojos verdes.",
+      "imageUrl": "https://images.unsplash.com/photo-1615000363959-e52262d2c75b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxibGFjayUyMGNhdHxlbnwwfHx8fDE3NTk3NDc2OTV8MA&ixlib=rb-4.0.3&q=80&w=800",
+      "imageHint": "black cat"
+    },
+    {
+      "id": "pet-5",
+      "description": "Un pequeño Chihuahua usando un suéter.",
+      "imageUrl": "https://images.unsplash.com/photo-1670793948132-17485fc49ff4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaGlodWFodWElMjBkb2d8ZW58MHx8fHwxNzU5NzQzNTgzfDA&ixlib=rb-4.0.3&q=80&w=800",
+      "imageHint": "chihuahua dog"
+    },
+    {
+      "id": "pet-6",
+      "description": "Un hermoso gato Maine Coon con pelaje largo.",
+      "imageUrl": "https://images.unsplash.com/photo-1698887044467-95dd34fa568e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtYWluZSUyMGNvb258ZW58MHx8fHwxNzU5NzQxMjMwfDA&ixlib.rb-4.0.3&q=80&w=800",
+      "imageHint": "maine coon"
+    },
+    {
+      "id": "pet-7",
+      "description": "Un feliz perro mestizo listo para ser adoptado.",
+      "imageUrl": "https://images.unsplash.com/photo-1598875184988-5e67b1a874b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkb2clMjBhZG9wdGlvbnxlbnwwfHx8fDE3NjMxNzMwMTB8MA&ixlib=rb-4.0.3&q=80&w=800",
+      "imageHint": "dog adoption"
+    },
+    {
+      "id": "pet-8",
+      "description": "Un gato atigrado naranja durmiendo al sol.",
+      "imageUrl": "https://images.unsplash.com/photo-1552954877-e96a0f0728c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx0YWJieSUyMGNhdHxlbnwwfHx8fDE3NTk3NDc2OTV8MA&ixlib=rb-4.0.3&q=80&w=800",
+      "imageHint": "tabby cat"
+    },
+    {
+      "id": "pet-9",
+      "description": "Un pastor alemán sentado pacientemente.",
+      "imageUrl": "https://images.unsplash.com/photo-1614595402938-ecee8416e6b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxnZXJtYW4lMjBzaGVwaGVyZHxlbnwwfHx8fDE3NTk3NTEwMDN8MA&ixlib=rb-4.0.3&q=80&w=800",
+      "imageHint": "german shepherd"
+    },
+    {
+      "id": "pet-10",
+      "description": "Un gato Scottish Fold con sus orejas características.",
+      "imageUrl": "https://images.unsplash.com/photo-1685377507301-e01b4c17e1f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzY290dGlzaCUyMGZvbGR8ZW58MHx8fHwxNzU5NzUzMjk2fDA&ixlib.rb-4.0.3&q=80&w=800",
+      "imageHint": "scottish fold"
+    },
+    {
+      "id": "pet-11",
+      "description": "Un amigable bulldog con cara arrugada.",
+      "imageUrl": "https://images.unsplash.com/photo-1607870410700-1f4db983d327?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxidWxsZG9nJTIwZG9nfGVufDB8fHx8MTc2MTYwNTQ4Mnww&ixlib.rb-4.0.3&q=80&w=800",
+      "imageHint": "bulldog dog"
+    },
+    {
+      "id": "pet-12",
+      "description": "Un majestuoso gato persa de abundante pelaje.",
+      "imageUrl": "https://images.unsplash.com/photo-1591429939960-b7d5add10b5c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzaWFuJTIwY2F0fGVufDB8fHx8MTc1OTczMTY1MHww&ixlib.rb-4.0.3&q=80&w=800",
+      "imageHint": "persian cat"
+    },
+    {
+      "id": "user-avatar-1",
+      "description": "Avatar for a user",
+      "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjMxNDEzMjJ8MA&ixlib=rb-4.0.3&q=80&w=400",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "shelter-1",
+      "description": "Exterior of an animal shelter",
+      "imageUrl": "https://images.unsplash.com/photo-1594004844563-536a03a6e532?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhbmltYWwlMjBzaGVsdGVyfGVufDB8fHx8MTc2MzE1MDkxOXww&ixlib=rb-4.0.3&q=80&w=800",
+      "imageHint": "animal shelter"
+    },
+    {
+      "id": "shelter-2",
+      "description": "Play area inside an animal shelter",
+      "imageUrl": "https://images.unsplash.com/photo-1518882174711-1de40238921b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxkb2dzJTIwcGxheWluZ3xlbnwwfHx8fDE3NjMxNzM0NjR8MA&ixlib=rb-4.0.3&q=80&w=800",
+      "imageHint": "dogs playing"
+    },
+    {
+      "id": "qr-code-placeholder",
+      "description": "Una persona escaneando un código QR en una placa de mascota.",
+      "imageUrl": "https://images.unsplash.com/photo-1696034180474-32d169b3e1a8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZXQlMjB0YWclMjBxciUyMGNvZGV8ZW58MHx8fHwxNzYzMjA4MjgxfDA&ixlib=rb-4.0.3&q=80&w=800",
+      "imageHint": "pet tag qr"
+    },
+    {
+      "id": "map-placeholder",
+      "description": "Un mapa de una ciudad con pines de ubicación.",
+      "imageUrl": "https://images.unsplash.com/photo-1598638122241-165b682b6838?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaXR5JTIwbWFwfGVufDB8fHx8MTc2MzIwODMxNXww&ixlib=rb-4.0.3&q=80&w=800",
+      "imageHint": "city map"
+    }
+  ]
+}
