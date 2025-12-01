@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Cat, Dog, PawPrint } from 'lucide-react';
-import type { Pet } from '@/types';
+import type { Pet, PetStatus } from '@/types';
 import { cn } from '@/lib/utils';
 
 interface PetCardProps {
@@ -12,27 +12,27 @@ interface PetCardProps {
 }
 
 export default function PetCard({ pet }: PetCardProps) {
-  const getStatusBadgeVariant = (status: Pet['status']) => {
+  const getStatusBadgeVariant = (status: PetStatus) => {
     switch (status) {
       case 'Lost':
         return 'destructive';
       case 'Adoption':
         return 'secondary';
-      default:
+      default: // 'Safe'
         return 'default';
     }
   };
 
-  const statusColors: Record<Pet['status'], string> = {
+  const statusColors: Record<PetStatus, string> = {
     Lost: 'bg-destructive/10 border-destructive/50 text-destructive-foreground',
     Adoption: 'bg-secondary/10 border-secondary/50 text-secondary-foreground',
     Safe: 'bg-primary/10 border-primary/50 text-primary-foreground',
   };
 
-  const statusTranslations: Record<Pet['status'], string> = {
+  const statusTranslations: Record<PetStatus, string> = {
     Lost: 'Perdido',
-    Adoption: 'Adopción',
-    Safe: 'Seguro',
+    Adoption: 'En Adopción',
+    Safe: 'A Salvo',
   };
 
   const PetIcon = () => {
@@ -66,7 +66,6 @@ export default function PetCard({ pet }: PetCardProps) {
             'absolute top-3 right-3',
             statusColors[pet.status]
           )}
-          variant={getStatusBadgeVariant(pet.status)}
         >
           {statusTranslations[pet.status]}
         </Badge>

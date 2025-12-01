@@ -8,10 +8,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+} from './ui/dropdown-menu'; // Corregido
+import { Button } from './ui/button'; // Corregido
 import { Bell, Trash2, MailOpen } from 'lucide-react';
-import type { Notification, User } from '@/types';
+import type { Notification, User } from '../types'; // Corregido
 import Link from 'next/link';
 
 export function UserNotifications() {

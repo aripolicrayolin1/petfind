@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Permitir leer/escribir a cualquier usuario que haya iniciado sesión
+    match /{document=**} {
+      allow read, write: if request.auth.uid != null;
+    }
+  }
+}

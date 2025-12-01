@@ -8,90 +8,60 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { LogIn } from 'lucide-react';
-import type { User as CurrentUserType, Shelter } from '@/types';
-import { mockUser } from '@/lib/data';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
 export default function LoginPage() {
   const { toast } = useToast();
-  const [email, setEmail] = useState(mockUser.email);
-  const [password, setPassword] = useState('password123');
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    // Check if it's the mock user first
-    if (email === mockUser.email) {
-      localStorage.setItem('currentUser', JSON.stringify(mockUser));
-      localStorage.setItem('isLoggedIn', 'true');
-      window.dispatchEvent(new Event('storage'));
-      window.location.href = '/';
-      return;
-    }
-
-    // Check if it's a shelter trying to log in
-    const shelterRequestsRaw = localStorage.getItem('shelterRequests');
-    const shelterRequests: Shelter[] = shelterRequestsRaw ? JSON.parse(shelterRequestsRaw) : [];
-    const foundShelter = shelterRequests.find(s => s.email.toLowerCase() === email.toLowerCase());
-
-    if (foundShelter) {
-        switch (foundShelter.status) {
-            case 'approved':
-                localStorage.setItem('currentUser', JSON.stringify(foundShelter));
-                localStorage.setItem('isLoggedIn', 'true');
-                window.dispatchEvent(new Event('storage'));
-                window.location.href = '/';
-                break;
-            case 'pending':
-                toast({
-                    title: 'Solicitud pendiente',
-                    description: 'Tu solicitud de refugio todavía está en revisión. Te notificaremos cuando sea aprobada.',
-                    duration: 5000,
-                });
-                break;
-            case 'rejected':
-                 toast({
-                    variant: 'destructive',
-                    title: 'Solicitud rechazada',
-                    description: 'Tu solicitud de registro para el refugio no fue aprobada.',
-                    duration: 5000,
-                });
-                break;
-        }
-    } else {
-        // Fallback for any other user (could be a registered user from signup)
-        const allUsersRaw = localStorage.getItem('userDatabase'); // A hypothetical place for all users
-        const allUsers = allUsersRaw ? JSON.parse(allUsersRaw) : [];
-        const foundUser = allUsers.find((u: CurrentUserType) => u.email.toLowerCase() === email.toLowerCase());
-
-        if (foundUser) {
-             localStorage.setItem('currentUser', JSON.stringify(foundUser));
-             localStorage.setItem('isLoggedIn', 'true');
-             window.dispatchEvent(new Event('storage'));
-             window.location.href = '/';
-        } else {
-             toast({
-                variant: 'destructive',
-                title: 'Credenciales no válidas',
-                description: 'No se encontró ninguna cuenta con ese correo electrónico.',
-            });
-        }
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast({
+        title: '¡Bienvenido de vuelta!',
+        description: 'Has iniciado sesión correctamente.',
+      });
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error("Error al iniciar sesión:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Error al iniciar sesión',
+        description: error.message || 'Ocurrió un error inesperado.',
+      });
+    } finally {
+      setLoading(false);
     }
   };
   
-  const handleGoogleLogin = () => {
-    const googleUser: CurrentUserType = {
-        id: 'user-google-mock',
-        name: 'Usuario de Google',
-        email: 'google.user@example.com',
-        avatarUrl: '',
-        avatarHint: '',
-    };
-    localStorage.setItem('currentUser', JSON.stringify(googleUser));
-    localStorage.setItem('isLoggedIn', 'true');
-    window.dispatchEvent(new Event('storage'));
-    window.location.href = '/';
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      toast({
+        title: '¡Bienvenido!',
+        description: 'Has iniciado sesión correctamente con Google.',
+      });
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error("Error al iniciar sesión con Google:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Error de inicio de sesión con Google',
+        description: error.message || 'No se pudo completar el inicio de sesión con Google.',
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   const heroImage = PlaceHolderImages.find(p => p.id === 'pet-7');
@@ -119,6 +89,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
               />
             </div>
             <div className="grid gap-2">
@@ -137,13 +108,14 @@ export default function LoginPage() {
                 required 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
               />
             </div>
-            <Button type="submit" className="w-full" onClick={handleLogin}>
-              <LogIn className="mr-2 h-4 w-4" /> Iniciar Sesión
+            <Button type="button" className="w-full" onClick={handleLogin} disabled={loading}>
+              {loading ? 'Iniciando sesión...' : <><LogIn className="mr-2 h-4 w-4" /> Iniciar Sesión</>}
             </Button>
-            <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
-              Iniciar Sesión con Google
+            <Button variant="outline" className="w-full" onClick={handleGoogleLogin} disabled={loading}>
+              {loading ? 'Un momento...' : 'Iniciar Sesión con Google'}
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">

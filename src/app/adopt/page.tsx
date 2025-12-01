@@ -10,28 +10,42 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
 import type { Pet } from '@/types';
-import { db } from '@/lib/firebase'; // Import the db instance
-import { collection, getDocs } from 'firebase/firestore'; // Import firestore functions
+import { db } from '@/lib/firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdoptPage() {
-  const [allPets, setAllPets] = useState<Pet[]>([]);
+  const [adoptionPets, setAdoptionPets] = useState<Pet[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPets = async () => {
-      const petsCollection = collection(db, 'pets');
-      const petsSnapshot = await getDocs(petsCollection);
-      const petsList = petsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Pet[];
-      setAllPets(petsList);
+    const fetchAdoptionPets = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        // Creamos una consulta a Firestore para obtener solo las mascotas en adopción
+        const petsCollection = collection(db, 'pets');
+        const q = query(petsCollection, where("status", "==", "Adoption"));
+        
+        const petsSnapshot = await getDocs(q);
+        const petsList = petsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Pet[];
+        setAdoptionPets(petsList);
+
+      } catch (err) {
+        console.error("Error fetching adoption pets:", err);
+        setError("No se pudieron cargar las mascotas. Por favor, inténtalo más tarde.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchPets();
+    fetchAdoptionPets();
   }, []);
-
-  const adoptionPets = allPets.filter((pet) => pet.status === 'Adoption');
 
   return (
     <>
@@ -65,7 +79,22 @@ export default function AdoptPage() {
           </div>
         </Card>
 
-        {adoptionPets.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-[250px] w-full" />
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-5 w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+            <div className="text-center py-16 border-2 border-dashed rounded-lg bg-destructive/10 border-destructive/50">
+                <h3 className="text-xl font-medium text-destructive-foreground">Error al cargar</h3>
+                <p className="mt-2 text-muted-foreground">{error}</p>
+            </div>
+        ) : adoptionPets.length > 0 ? (
            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {adoptionPets.map((pet) => (
               <PetCard key={pet.id} pet={pet} />
@@ -74,10 +103,10 @@ export default function AdoptPage() {
         ) : (
            <div className="text-center py-16 border-2 border-dashed rounded-lg">
             <h3 className="text-xl font-medium text-foreground">
-              No hay mascotas para adoptar
+              No hay mascotas en adopción por el momento
             </h3>
             <p className="mt-2 text-muted-foreground">
-              Aún no hay datos en Firestore. ¡Agrega algunos para empezar!
+              Vuelve a consultar más tarde, ¡constantemente se suman nuevos amigos!
             </p>
           </div>
         )}

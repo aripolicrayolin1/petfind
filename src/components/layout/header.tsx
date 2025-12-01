@@ -1,6 +1,6 @@
 'use client';
 
-import { Logo } from '@/components/logo';
+import { Logo } from '../logo'; // Corregido: Importación relativa
 import { MainNav } from './main-nav';
 import { UserNav } from './user-nav';
 import { Button } from '../ui/button';

@@ -1,5 +1,5 @@
 import { PawPrint } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils'; // Corregido: Importación relativa
 import Link from 'next/link';
 
 export function Logo({ className }: { className?: string }) {

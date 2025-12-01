@@ -1,8 +1,5 @@
 {
   "projects": {
-    "default": "fridgefeast-axz6k",
-    "prod": "fridgefeast-axz6k"
-  },
-  "targets": {},
-  "etags": {}
+    "default": "petfind-f6d2d"
+  }
 }

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils'; // Corregido: Importación relativa
 import { PawPrint } from 'lucide-react';
 
 export function MainNav({

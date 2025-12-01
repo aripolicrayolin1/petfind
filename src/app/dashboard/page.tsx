@@ -1,5 +1,10 @@
+import AppLayout from '@/components/layout/app-layout';
 import DashboardContent from './DashboardContent';
 
 export default function DashboardPage() {
-  return <DashboardContent />;
+  return (
+    <AppLayout>
+      <DashboardContent />
+    </AppLayout>
+  );
 }

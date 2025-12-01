@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -28,8 +27,10 @@ import { aiSuggestedBreeds } from '@/ai/flows/ai-suggested-breeds';
 import Image from 'next/image';
 import { BrainCircuit, Loader2, Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { mockPets } from '@/lib/data';
-import type { Pet, User as CurrentUserType, Shelter } from '@/types';
+import { useAuth } from '@/context/AuthContext';
+import { db, storage } from '@/lib/firebase'; // Importar storage
+import { collection, addDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Importar funciones de storage
 
 const petFormSchema = z.object({
   name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
@@ -47,10 +48,12 @@ type PetFormValues = z.infer<typeof petFormSchema>;
 export default function PetRegistrationForm() {
   const { toast } = useToast();
   const router = useRouter();
-  const [photo, setPhoto] = useState<File | null>(null);
+  const { currentUser } = useAuth();
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [suggestedBreeds, setSuggestedBreeds] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<PetFormValues>({
     resolver: zodResolver(petFormSchema),
@@ -69,7 +72,7 @@ export default function PetRegistrationForm() {
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setPhoto(file);
+      setPhotoFile(file); // Guardar el objeto File
       
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -112,45 +115,73 @@ export default function PetRegistrationForm() {
     }
   };
 
-  function onSubmit(data: PetFormValues) {
-    const currentUserRaw = localStorage.getItem('currentUser');
-    if (!currentUserRaw) {
+  async function onSubmit(data: PetFormValues) {
+    if (!currentUser) {
         toast({
             variant: 'destructive',
             title: 'Error de autenticación',
-            description: 'No se pudo encontrar el usuario. Por favor, inicia sesión de nuevo.',
+            description: 'Debes iniciar sesión para registrar una mascota.',
         });
         router.push('/login');
         return;
     }
-    const currentUser: CurrentUserType | Shelter = JSON.parse(currentUserRaw);
     
-    // Determine if the current user is a shelter based on the object structure
-    const isShelter = 'status' in currentUser;
-    const petStatus = isShelter ? 'Adoption' : 'Safe';
-    
-    const existingPetsRaw = localStorage.getItem('userPets');
-    // Initialize with mockPets only if 'userPets' doesn't exist in localStorage
-    const existingPets: Pet[] = existingPetsRaw ? JSON.parse(existingPetsRaw) : [];
-    
-    const newPet: Pet = {
-        ...data,
-        id: `pet-${Date.now()}`,
-        status: petStatus,
-        ownerId: currentUser.id, // The logged-in entity (user or shelter) is the owner
-        shelterId: isShelter ? currentUser.id : null,
-        imageUrl: photoPreview || `https://picsum.photos/seed/${Date.now()}/800/600`,
-        imageHint: 'new pet',
-    };
+    if (!photoFile) {
+        toast({
+            variant: 'destructive',
+            title: 'Foto requerida',
+            description: 'Por favor, sube una foto de tu mascota.',
+        });
+        return;
+    }
 
-    const updatedPets = [...existingPets, newPet];
-    localStorage.setItem('userPets', JSON.stringify(updatedPets));
-    
-    toast({
-      title: '¡Mascota registrada!',
-      description: `${data.name} ha sido añadido(a) con éxito.`,
-    });
-    router.push('/');
+    setIsSubmitting(true);
+
+    try {
+        // 1. Subir la imagen a Firebase Storage
+        const storageRef = ref(storage, `pets/${currentUser.id}/${photoFile.name}_${Date.now()}`);
+        const uploadResult = await uploadBytes(storageRef, photoFile);
+        const imageUrl = await getDownloadURL(uploadResult.ref);
+
+        // 2. Crear el objeto de datos de la mascota con la URL de la imagen
+        const imageHint = `a photo of ${data.name}, a ${data.color} ${data.breed}`;
+        const newPetData = {
+            ...data,
+            ownerId: currentUser.id,
+            shelterId: null,
+            status: 'Safe' as const,
+            imageUrl, // Guardamos la URL de Firebase Storage
+            imageHint,
+            createdAt: new Date().toISOString(),
+        };
+
+        // 3. Guardar los datos de la mascota en Firestore
+        const petsCollectionRef = collection(db, 'pets');
+        const petDocRef = await addDoc(petsCollectionRef, newPetData);
+
+        // 4. Actualizar el documento del usuario con el nuevo ID de la mascota
+        const userDocRef = doc(db, 'users', currentUser.id);
+        await updateDoc(userDocRef, {
+            pets: arrayUnion(petDocRef.id)
+        });
+
+        toast({
+            title: '¡Mascota registrada!',
+            description: `${data.name} ha sido añadido(a) con éxito.`,
+        });
+
+        router.push('/dashboard');
+
+    } catch (error: any) {
+        console.error("Error registering pet:", error);
+        toast({
+            variant: 'destructive',
+            title: 'Error al registrar la mascota',
+            description: error.message || 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
   }
 
   return (
@@ -282,10 +313,10 @@ export default function PetRegistrationForm() {
           </div>
         </CardContent>
         <CardFooter className="border-t px-6 py-4">
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Registrar mascota
-          </Button>
+            <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Registrar mascota
+            </Button>
         </CardFooter>
       </form>
     </Card>
